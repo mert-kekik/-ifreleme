@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gizli Mesaj Şifreleyici</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body { 
+            font-family: sans-serif; 
+            background: #121212; 
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px; 
+            text-align: center;
+        }
+        textarea, input { 
+            width: 90%; 
+            max-width: 400px; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+            border: none; 
+            font-family: monospace;
+            background: #2a2a2a;
+            color: #fff;
+        }
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+        textarea::placeholder, input::placeholder {
+            color: #aaa;
+        }
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            width: 90%;
+            max-width: 420px;
+            justify-content: center;
+        }
+        button { 
+            flex: 1;
+            padding: 12px; 
+            border-radius: 5px; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold; 
+            color: white;
+            transition: 0.2s;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        #encryptBtn { background: #e50914; }
+        #decryptBtn { background: #28a745; }
+        #copyBtn { 
+            background: #007bff; 
+            margin-top: 10px; 
+            width: 90%; 
+            max-width: 420px; 
+            display: none; 
+        }
+        .disclaimer {
+            font-size: 0.7em;
+            color: #666;
+            margin-top: 30px;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Gizli Mesaj 🕵️‍♂️</h2>
+    
+    <textarea id="inputText" placeholder="Şifrelenecek veya çözülecek mesajı buraya girin..."></textarea>
+    <input type="text" id="secretKey" placeholder="Gizli Şifre (Örn: 1234)">
+    
+    <div class="btn-container">
+        <button id="encryptBtn" onclick="encryptMessage()">🔒 Şifrele</button>
+        <button id="decryptBtn" onclick="decryptMessage()">🔓 Çöz</button>
+    </div>
+    
+    <textarea id="outputText" placeholder="Sonuç burada görünecek..." readonly></textarea>
+    <button id="copyBtn" onclick="copyToClipboard()">📋 Sonucu Kopyala</button>
+
+    <p class="disclaimer">
+        *Sorumluluk Reddi: Bu uygulama tamamen tarayıcınızda çevrimdışı çalışır ve hiçbir verinizi kaydetmez veya sunucuya iletmez. Bu aracı kullanarak oluşturulan veya paylaşılan içeriklerin yasal sorumluluğu tamamen kullanıcıya aittir.
+    </p>
+
+    <script>
+        function encryptMessage() {
+            const text = document.getElementById('inputText').value;
+            const key = document.getElementById('secretKey').value;
+
+            if (!text || !key) {
+                alert("Lütfen hem mesajı hem de şifreyi girin!");
+                return;
+            }
+
+            try {
+                // CryptoJS ile AES Şifreleme
+                const encrypted = CryptoJS.AES.encrypt(text, key).toString();
+                document.getElementById('outputText').value = encrypted;
+                document.getElementById('copyBtn').style.display = 'block';
+            } catch (e) {
+                alert("Şifreleme sırasında bir hata oluştu.");
+            }
+        }
+
+        function decryptMessage() {
+            const text = document.getElementById('inputText').value;
+            const key = document.getElementById('secretKey').value;
+
+            if (!text || !key) {
+                alert("Lütfen hem şifreli mesajı hem de şifreyi girin!");
+                return;
+            }
+
+            try {
+                // CryptoJS ile AES Çözme
+                const decrypted = CryptoJS.AES.decrypt(text, key);
+                const originalText = decrypted.toString(CryptoJS.enc.Utf8);
+
+                // Eğer şifre yanlışsa originalText boş döner
+                if (!originalText) {
+                    alert("Şifre yanlış veya metin bozuk!");
+                    return;
+                }
+
+                document.getElementById('outputText').value = originalText;
+                document.getElementById('copyBtn').style.display = 'block';
+            } catch (e) {
+                alert("Şifre yanlış veya geçersiz bir metin girdiniz!");
+            }
+        }
+
+        function copyToClipboard() {
+            const outputText = document.getElementById('outputText');
+            outputText.select();
+            outputText.setSelectionRange(0, 99999); // Mobil tarayıcılar için
+            document.execCommand("copy");
+            
+            // Kullanıcıya kopyalandı hissi vermek için butonu kısa süreli değiştiriyoruz
+            const copyBtn = document.getElementById('copyBtn');
+            const originalText = copyBtn.innerText;
+            copyBtn.innerText = "✅ Kopyalandı!";
+            copyBtn.style.background = "#28a745";
+            
+            setTimeout(() => { 
+                copyBtn.innerText = originalText; 
+                copyBtn.style.background = "#007bff";
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
