@@ -2,6 +2,8 @@
 
 Bu proje, metin tabanlı mesajları tamamen tarayıcı üzerinde, çevrimdışı (offline) olarak şifrelemeye ve çözmeye yarayan tek sayfalık bir web uygulamasıdır. Gelişmiş AES şifreleme standardı kullanılarak oluşturulmuştur.
 
+https://mert-kekik.github.io/-ifreleme/
+
 ## 🚀 Özellikler
 * **Güçlü Şifreleme:** CryptoJS kütüphanesi ve AES algoritması ile yüksek güvenlikli metin şifreleme.
 * **Sunucusuz Mimari:** Hiçbir veri veritabanına veya sunucuya gönderilmez. Tüm işlemler anlık olarak kullanıcının tarayıcısında gerçekleşir.
